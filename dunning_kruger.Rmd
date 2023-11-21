@@ -1,0 +1,105 @@
+---
+jupyter:
+  jupytext:
+    notebook_metadata_filter: all,-language_info
+    split_at_heading: true
+    text_representation:
+      extension: .Rmd
+      format_name: rmarkdown
+      format_version: '1.2'
+      jupytext_version: 1.15.2
+  kernelspec:
+    display_name: Python 3 (ipykernel)
+    language: python
+    name: python3
+---
+
+# Exploring the Dunning-Kruger effect
+
+Here we load the libraries we need:
+
+```{python}
+import numpy as np
+rng = np.random.default_rng()
+import pandas as pd
+import matplotlib.pyplot as plt
+np.set_printoptions(suppress=True)
+pd.set_option('mode.copy_on_write', True)
+```
+
+In this notebook we are investigating whether the Dunning-Kruger effect can be explained with simple statistical artifacts.
+
+An example of random choice.
+
+```{python}
+a = rng.choice([1, 2], p=[0.3, 0.7], size=10)
+a
+```
+
+Make some actual scores.
+
+```{python}
+# Actual scores from some test.  Mean 50, std 15.
+actual_scores = rng.normal(50, 15, size=10_000)
+actual_scores[:10]
+```
+
+```{python}
+plt.hist(actual_scores, bins=100);
+```
+
+```{python}
+# Actually, I'm more interested in percentiles.  Let's order the scores.
+sorted_actual = np.sort(actual_scores)
+sorted_actual
+```
+
+```{python}
+# Oh wait, it doesn't actually matter what the scores are, it just depends
+# on their rank order.   I can just use linspace for that.
+percentile_actual = np.linspace(0, 100, 10_000)
+percentile_actual
+```
+
+```{python}
+# Scale the range either side of the mean, to +-30 (rather than 50)
+x = percentile_actual -  50. # Scale so range is -30 to +30.
+crushed_bta = x * (30 / 50) + 60. # BTA effect (60 not 50).
+np.mean(crushed_bta)
+```
+
+```{python}
+plt.hist(crushed_bta, bins=100)
+```
+
+```{python}
+perceived_minus_actual = crushed_bta - percentile_actual
+perceived_minus_actual
+```
+
+```{python}
+plt.hist(perceived_minus_actual)
+```
+
+```{python}
+plt.plot(perceived_minus_actual)
+```
+
+```{python}
+df = pd.DataFrame({
+    'actual_percentile': percentile_actual,
+    'perceived_percentile': crushed_bta,
+    'difference': crushed_bta - percentile_actual
+})
+df
+```
+
+```{python}
+df['actual_quantile'] = pd.qcut(df['actual_percentile'], 4,
+                                labels=['low', 'med-low', 'med-high', 'high'])
+df
+```
+
+```{python}
+df.groupby('actual_quantile', observed=True)['difference'].mean()
+```
