@@ -113,11 +113,3 @@ df['difference_w_randomness'] = df['perceived_percentile_w_randomness'] - df['ac
 
 df.head()
 ```
-
-```{python}
-
-```
-
-```{python}
-
-```
