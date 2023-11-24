@@ -105,5 +105,19 @@ df.groupby('actual_quantile', observed=True)['difference'].mean()
 ```
 
 ```{python}
-# an arbitrary change
+# add some randomness to perceived percentiles
+df['perceived_percentile_w_randomness'] = df['perceived_percentile'] + rng.normal(0, 10, len(df))
+
+# calculate the difference between the new perceived percentiles (with randomness) and the actual percentiles
+df['difference_w_randomness'] = df['perceived_percentile_w_randomness'] = df['actual_percentile']
+
+df.head()
+```
+
+```{python}
+
+```
+
+```{python}
+
 ```
