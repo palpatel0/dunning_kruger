@@ -7,7 +7,7 @@ jupyter:
       extension: .Rmd
       format_name: rmarkdown
       format_version: '1.2'
-      jupytext_version: 1.15.2
+      jupytext_version: 1.14.5
   kernelspec:
     display_name: Python 3 (ipykernel)
     language: python
@@ -102,4 +102,8 @@ df
 
 ```{python}
 df.groupby('actual_quantile', observed=True)['difference'].mean()
+```
+
+```{python}
+# an arbitrary change
 ```
