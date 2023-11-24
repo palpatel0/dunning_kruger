@@ -70,6 +70,7 @@ np.mean(crushed_bta)
 
 ```{python}
 plt.hist(crushed_bta, bins=100)
+#change
 ```
 
 ```{python}
